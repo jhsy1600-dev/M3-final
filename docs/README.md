@@ -33,6 +33,7 @@
 | [phase3_auth.md](phase3_auth.md), [auth_upgrade_design.md](auth_upgrade_design.md) | 인증(익명 UID), 다른 기기에서 이어 쓰기(암호) 설계 |
 | [phase4_plan.md](phase4_plan.md), [phase5f_design.md](phase5f_design.md), [multi_goal_design.md](multi_goal_design.md) | 계획 생성·주차 배치, 전체 과정 일괄 계획, 동시 학습 2개 |
 | [phase5e_design.md](phase5e_design.md), [phase8b_design.md](phase8b_design.md) | 관리자(사용자·피드백), 참고자료 수집·승인 |
+| [architecture.md](architecture.md) | **시스템 아키텍처**(구성도, 인증·보안 경계, AI 호출·RAG·메모리, 배포) |
 | [phase8c_ai_providers.md](phase8c_ai_providers.md) | AI 공급자 확장 |
 | [resource_curation_roadmap.md](resource_curation_roadmap.md) | 학습 자료 큐레이션 단계 계획 |
 
@@ -40,6 +41,7 @@
 | 문서 | 내용 |
 |---|---|
 | [ai_improvement_log.md](ai_improvement_log.md) | AI 개선 이력 IMP-001~(현상, 원인, 결정, 효과) |
+| [feedback_to_improvement_map.md](feedback_to_improvement_map.md) | 사용자 의견 → 개선 대응표(CR·IMP, 발표용) |
 | [ai_prompt_inventory.md](ai_prompt_inventory.md) | AI 기능 7개와 시스템 프롬프트 목록 |
 | [ai_prompts_learning_path.md](ai_prompts_learning_path.md) | 학습 경로 설정의 실제 프롬프트(호출 1~3) |
 | [plan_prompt_improvement_proposal.md](plan_prompt_improvement_proposal.md), [plan_prompt_v2_draft.md](plan_prompt_v2_draft.md), [plan_prompt_test_2026-11-09.md](plan_prompt_test_2026-11-09.md) | 계획 생성 3단계 호출(CR-012)에 이른 제안·초안·비교 시험 |
