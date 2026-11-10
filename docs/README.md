@@ -11,6 +11,7 @@
 | [../mission.md](../mission.md) | 과제 요구사항과 평가 기준 |
 | [../서비스기획서.md](../서비스기획서.md) | 문제, 대상, 범위, 역할 분담 |
 | [../PRD.md](../PRD.md) | 기능 요구사항과 수용 기준(FR-01~09), 비기능 |
+| [../ARCHITECTURE.md](../ARCHITECTURE.md) | **시스템 아키텍처**(구성도, 인증·보안 경계, AI 호출·RAG·메모리, 배포) |
 | [../mockup/index.html](../mockup/index.html) | 표준 화면 목업(화면 변경의 기준) |
 | [../TASK.md](../TASK.md) | 14일 MVP 작업 계획과 이력(**2026-11-09 종료, 동결**) |
 | [../CLAUDE.md](../CLAUDE.md) | 작업 규칙(역할, 핵심 결정, 비밀값, Git) |
@@ -33,7 +34,6 @@
 | [phase3_auth.md](phase3_auth.md), [auth_upgrade_design.md](auth_upgrade_design.md) | 인증(익명 UID), 다른 기기에서 이어 쓰기(암호) 설계 |
 | [phase4_plan.md](phase4_plan.md), [phase5f_design.md](phase5f_design.md), [multi_goal_design.md](multi_goal_design.md) | 계획 생성·주차 배치, 전체 과정 일괄 계획, 동시 학습 2개 |
 | [phase5e_design.md](phase5e_design.md), [phase8b_design.md](phase8b_design.md) | 관리자(사용자·피드백), 참고자료 수집·승인 |
-| [architecture.md](architecture.md) | **시스템 아키텍처**(구성도, 인증·보안 경계, AI 호출·RAG·메모리, 배포) |
 | [phase8c_ai_providers.md](phase8c_ai_providers.md) | AI 공급자 확장 |
 | [resource_curation_roadmap.md](resource_curation_roadmap.md) | 학습 자료 큐레이션 단계 계획 |
 

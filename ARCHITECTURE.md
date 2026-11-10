@@ -1,6 +1,6 @@
 # PaceMate 시스템 아키텍처
 
-작성: PM, 2026-11-10 (CR-016). 근거: 코드를 직접 읽고 썼다(`backend/main.py`, `auth.py`, `ai_client.py`, `rag.py`, `plan_ai.py`, `tutor.py`, `password_auth.py`, `firebase/firestore.rules`, `README.md` §6·§8). 이 문서는 **구조와 경계**를 설명하고, 화면별 데이터 흐름은 `dfd_by_module.md`, 데이터 구조는 `erd_current.md`, API 계약은 `phase1_design.md` 가 맡는다. 서비스기획서의 그림(`images/PaceMate_서비스구조_*.png`)은 소개용이고 이 문서가 정식 기술 자료다.
+작성: PM, 2026-11-10 (CR-016). 근거: 코드를 직접 읽고 썼다(`backend/main.py`, `auth.py`, `ai_client.py`, `rag.py`, `plan_ai.py`, `tutor.py`, `password_auth.py`, `firebase/firestore.rules`, `README.md` §6·§8). 이 문서는 **구조와 경계**를 설명하고, 화면별 데이터 흐름은 `docs/dfd_by_module.md`, 데이터 구조는 `docs/erd_current.md`, API 계약은 `docs/phase1_design.md` 가 맡는다. 서비스기획서의 그림(`images/PaceMate_서비스구조_*.png`)은 소개용이고 이 문서가 정식 기술 자료다.
 **확인 수준:** 코드 읽기로 쓴 것이며 그림 렌더링과 배포 환경의 설정값(환경변수)은 이 문서에서 재확인하지 않았다.
 
 ## 1. 구성도 (누가 무엇을 부르는가)
@@ -68,10 +68,10 @@ flowchart LR
 | 비밀값 | `.env`·Render 환경변수에만. 코드·문서·로그·채팅에 쓰지 않음 | `CLAUDE.md` |
 | 로그 | 사용자 입력 원문, 회고, AI 응답 원문, 토큰은 남기지 않고 실패 종류만 | `ai_client.py` |
 
-운영 중 발견한 사례: 배포 시 Firestore 콘솔에 게시된 규칙이 저장소 규칙이 아니라 생성 시의 "테스트 모드"였다(2026-10-28 발견, 10-29 저장소 규칙 게시, `change_management.md` CR-005). 규칙 파일은 **저장소에 있는 것이 게시된 것과 같은지 확인**해야 한다.
+운영 중 발견한 사례: 배포 시 Firestore 콘솔에 게시된 규칙이 저장소 규칙이 아니라 생성 시의 "테스트 모드"였다(2026-10-28 발견, 10-29 저장소 규칙 게시, `docs/change_management.md` CR-005). 규칙 파일은 **저장소에 있는 것이 게시된 것과 같은지 확인**해야 한다.
 
 ## 4. AI 호출 구조
-모든 AI 호출이 같은 방식이다(상세와 프롬프트 목록: `ai_prompt_inventory.md`).
+모든 AI 호출이 같은 방식이다(상세와 프롬프트 목록: `docs/ai_prompt_inventory.md`).
 
 ```mermaid
 flowchart TB
@@ -100,7 +100,7 @@ flowchart TB
 - 이 둘이 미션의 "필수 기술 요소 2개 이상" 충족 근거다(`서비스기획서.md` 5장).
 
 ## 5. 데이터와 쓰기 규칙 (구조 요약)
-- 컬렉션: `users`, `consent_records`, `goals`, `tasks`, `study_logs`, `reflections`, `conversations`, `insights`, `credentials`, 관리자용 `feedback`·`resource_candidates` 등(전체와 필드: `erd_current.md`).
+- 컬렉션: `users`, `consent_records`, `goals`, `tasks`, `study_logs`, `reflections`, `conversations`, `insights`, `credentials`, 관리자용 `feedback`·`resource_candidates` 등(전체와 필드: `docs/erd_current.md`).
 - 계획은 **확정할 때만 저장**한다(`POST /api/plan/confirm` 이 목표와 과제를 함께 저장). 초안 생성은 저장하지 않는다.
 - 쓰기 요청은 `client_request_id` 로 **멱등** 처리한다(응답을 못 받고 재시도해도 중복 저장 없음).
 - 날짜와 주간 경계(월~일)는 서비스 시간대 **Asia/Seoul** 이고, 백엔드는 `clock.py`, 프론트는 `lib/week.ts` 만 쓴다.
@@ -112,13 +112,13 @@ flowchart TB
 | 프론트 | Vercel(`https://ai-n-fprj.vercel.app/`) | 배포 연결 방식은 `deploy_guide.md` 를 따른다(이 문서에서 재확인 안 함) |
 | 백엔드 | Render(무료 플랜은 유휴 후 첫 요청이 느림, 화면이 대기 안내와 GET 재시도를 한다 — CR-002) | `main` push 시 재배포됨(변경관리 문서의 push 기록과 같은 운영 방식). 환경변수로 모드·키 설정 |
 | 인증·DB | Firebase 프로젝트 하나(모든 값이 같은 프로젝트) | 규칙은 `firebase/firestore.rules` |
-| 소스 | GitHub `main` | 변경 기록 `change_management.md` |
+| 소스 | GitHub `main` | 변경 기록 `docs/change_management.md` |
 | 환경 안전장치 | 배포 환경에서 dev 인증, 메모리 저장소, 위험한 CORS, 빈 비밀값이면 서버가 시작을 거부 | `deploy_config.py`, `README.md` §8 |
 
-절차와 환경변수: `deploy_guide.md`, 배포 전 점검: `pre_deploy_checklist.md`.
+절차와 환경변수: `docs/deploy_guide.md`, 배포 전 점검: `docs/pre_deploy_checklist.md`.
 
 ## 7. 알려진 한계 (아키텍처 관점)
 - Render 무료 플랜의 콜드 스타트(첫 요청 지연).
 - RAG 는 어휘 기반이라 표현이 달라지면 못 찾을 수 있다(자료가 적은 분야는 "자료 없음"으로 정직하게 표시). 임베딩 검색은 MVP 이후 후보다.
 - 암호 시도 횟수 제한은 메모리에만 있어 서버 재시작 시 초기화된다(`password_auth.py` 주석).
-- Function Calling 기반 Agent, 리마인더 자동화, 멀티모달은 MVP 에서 제외했다(`서비스기획서.md` 10장, `post_mvp_backlog.md`).
+- Function Calling 기반 Agent, 리마인더 자동화, 멀티모달은 MVP 에서 제외했다(`서비스기획서.md` 10장, `docs/post_mvp_backlog.md`).
