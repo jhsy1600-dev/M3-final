@@ -190,7 +190,7 @@ export default function Home() {
         <a className="brand" href="#dashboard" onClick={(e) => { e.preventDefault(); go("dashboard"); }}>
           <span className="brand-icon">↗</span>
           <span>
-            PaceMate<em>LEARN AT YOUR PACE</em>
+            PaceMate<em>내 페이스로, 끝까지</em>
           </span>
         </a>
         <div className="nav-group">

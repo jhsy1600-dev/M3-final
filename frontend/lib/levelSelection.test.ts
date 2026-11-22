@@ -166,7 +166,7 @@ test("the preview tasks: numbered tinted title line, divider, and a small link-s
   const css = read("../app/globals.css");
   assert.match(css, /\.task-edit-head \{[^}]*background: var\(--lav\)/);
   assert.match(css, /\.task-no \{/);
-  assert.match(css, /\.task-edit-row \{ border-color: #d9dcec; margin-bottom: 12px; \}/);
+  assert.match(css, /\.task-edit-row \{ border-color: #cbd4e6; margin-bottom: 12px; \}/);
   // new styles use the existing colour variables only (the one literal grey is the existing row border's own tone)
   const block = css.slice(css.indexOf("/* CR-012 (2nd): one editable combo"), css.indexOf("/* CR-012 (2nd): the preview tasks"));
   assert.ok(!/#[0-9a-f]{3,6}/i.test(block.replace(/#fff\b/gi, "")), "combo styles: no new hard-coded colour");
