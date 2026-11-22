@@ -15,6 +15,7 @@ Design notes:
 import json
 import logging
 import os
+import re
 from abc import ABC, abstractmethod
 from contextlib import contextmanager
 from contextvars import ContextVar
@@ -109,6 +110,24 @@ def plan_max_output_tokens() -> int:
 def plan_model() -> str:
     """CR-012: the model of the three plan-generation calls only (tutor, insight, path... keep OPENAI_MODEL)."""
     return os.getenv("OPENAI_PLAN_MODEL") or "gpt-5.4-mini"
+
+
+_ERROR_CODE_RE = re.compile(r"[a-z0-9_]{1,64}")
+
+
+def _failure_log_fields(exc: BaseException) -> str:
+    """CR-026: only three safe fields describe a failed provider call: the HTTP status, the provider's
+    short error code (a strict allow-list pattern) and the exception class name. Never the exception
+    message, body or response: an auth error's message holds a piece of the key."""
+    status = getattr(exc, "status_code", None)
+    status_text = str(status) if isinstance(status, int) and not isinstance(status, bool) else "none"
+    code = getattr(exc, "code", None)
+    if not isinstance(code, str):
+        body = getattr(exc, "body", None)
+        inner = body.get("error", body) if isinstance(body, dict) else None
+        code = inner.get("code") if isinstance(inner, dict) else None
+    code_text = code if isinstance(code, str) and _ERROR_CODE_RE.fullmatch(code) else "none"
+    return f"status={status_text} code={code_text} exc={type(exc).__name__}"
 
 
 class AIClient(ABC):
@@ -238,10 +257,10 @@ class OpenAIClient(AIClient):
         except self._timeout_error as exc:
             raise AIRetryableError("provider call timed out") from exc
         except self._connection_error as exc:
-            logger.error("ai_call_failed kind=unavailable")
+            logger.error("ai_call_failed kind=unavailable %s", _failure_log_fields(exc))
             raise AIUnavailableError("AI 서비스에 연결할 수 없습니다.") from exc
         except Exception as exc:  # auth errors, rate limits, etc. - fail fast, don't retry
-            logger.error("ai_call_failed kind=unavailable")
+            logger.error("ai_call_failed kind=unavailable %s", _failure_log_fields(exc))
             raise AIUnavailableError("AI 서비스 호출에 실패했습니다.") from exc
         return completion.choices[0].message.content or "{}"
 
