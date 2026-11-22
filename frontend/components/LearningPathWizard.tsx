@@ -46,6 +46,7 @@ import {
 import { clearWizardDraft, loadWizardDraft, saveWizardDraft } from "@/lib/wizardStorage";
 import { mondayOfDateString, todayKSTDateString } from "@/lib/week";
 import { startDateError } from "@/lib/wizardDates";
+import { TaskMinutesInput } from "@/components/TaskMinutesInput";
 
 type LevelItem = { order: number; name: string; description: string };
 type CourseItem = { id: string; title: string; description: string; levels: LevelItem[] };
@@ -917,14 +918,7 @@ export function LearningPathWizard({
                           placeholder="과업 설명"
                         />
                         <div className="field-grid">
-                          <input
-                            type="number"
-                            min={1}
-                            max={6000}
-                            value={Number.isFinite(t.estimated_minutes) ? t.estimated_minutes : ""}
-                            onChange={(e) => updateTask(i, { estimated_minutes: e.target.value === "" ? Number.NaN : Number(e.target.value) })}
-                            aria-label="예상 학습 시간(분)"
-                          />
+                          <TaskMinutesInput value={t.estimated_minutes} onChange={(m) => updateTask(i, { estimated_minutes: m })} />
                           <select
                             value={t.suggested_weekday}
                             onChange={(e) => updateTask(i, { suggested_weekday: e.target.value as Weekday })}

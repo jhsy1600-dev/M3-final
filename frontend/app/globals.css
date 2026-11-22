@@ -247,6 +247,10 @@ ul { margin: 0; padding-left: 18px; color: #586277; line-height: 1.7; font-size:
 .task-edit-row { border: 1px solid var(--line); border-radius: 10px; padding: 12px; margin-bottom: 8px; display: grid; gap: 6px; }
 .task-edit-row input, .task-edit-row textarea, .task-edit-row select { width: 100%; border: 1px solid #e2e5ed; background: #fff; border-radius: 9px; padding: 8px 10px; color: var(--ink); font-size: 12px; }
 .task-edit-row textarea { min-height: 52px; resize: vertical; }
+/* CR-022: visible unit "분" next to the minutes input (same 12px as the input) */
+.minutes-field { display: flex; align-items: center; gap: 6px; min-width: 0; }
+.minutes-field input { flex: 1 1 auto; min-width: 0; }
+.minutes-unit { flex: 0 0 auto; font-size: 12px; font-weight: 700; color: var(--muted, #6b7280); }
 /* CR-012 (2nd): one editable combo box per level; the list always shows every option */
 .combo { position: relative; }
 .combo input { padding-right: 30px; }
