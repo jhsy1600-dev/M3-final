@@ -39,3 +39,15 @@ test("status colors keep their meaning: error is the red variable, ok/done the g
   assert.match(css, /\.dot\.ok \{ background: var\(--green\)/);
   assert.match(css, /\.save-status \{[^}]*color: var\(--green\)/);
 });
+
+test("the dashboard header slogan: only on the dashboard, between the greeting and the button, wide screens only", () => {
+  const dash = read("../components/Dashboard.tsx").replace(/\s+/g, " ");
+  assert.match(dash, /<\/div> <p className="brand-slogan"> 배움의 시작부터 완주까지, <br \/> PaceMate가 함께합니다\. <\/p> <button className="btn" onClick=\{onCreatePath\}>/);
+  for (const f of ["AdminFeedbackScreen", "AdminLibraryScreen", "AdminUsersScreen", "AnalysisScreen", "ExecutionScreen", "LearningPathWizard", "SettingsScreen", "TutorScreen", "WeeklyPlanScreen"]) {
+    assert.ok(!read(`../components/${f}.tsx`).includes("brand-slogan"), `${f} has no slogan`);
+  }
+  const css = read("../app/globals.css");
+  assert.match(css, /\.heading \.brand-slogan \{ display: none; margin: 0; color: var\(--muted\); font-size: 14px; font-weight: 700; line-height: 1\.5; text-align: center; align-self: center; flex: 1 1 auto; padding: 0 16px; white-space: nowrap; \}/);
+  assert.match(css, /@media \(min-width: 1200px\) \{ \.heading \.brand-slogan \{ display: block; \} \}/);
+  assert.ok(css.indexOf("brand-slogan") < css.indexOf("/* CR-027 theme layer"), "theme layer stays last");
+});

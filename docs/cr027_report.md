@@ -1,14 +1,15 @@
-# CR-027 개발 보고서: 표준 목업의 새 색 적용 + 브랜드 문구 세 곳
+# CR-027 개발 보고서: 표준 목업의 새 색 적용 + 브랜드 문구 네 곳(§2-1 의 4번 포함, 지시서 개정 반영)
 
 작성: 개발팀, 2026-11-23. 지시서: docs/cr027_dev_prompt.md. 로컬 커밋만 했고 push 하지 않았다.
 
 ## 1. 변경 파일
 | 파일 | 내용 |
 |---|---|
-| `frontend/app/globals.css` | ① 맨 끝에 `/* CR-027 theme layer: copied from mockup/index.html, remove to revert */` 주석 + 목업의 `<style>` 두 블록(`concept 3` 23줄, `fixes` 4줄)을 **그대로** 붙임(스크립트로 목업 본문과 문자열 일치 확인). ② 앱 전용 클래스 옛 색 값 교체(§2) ③ `.brand em` 크기·간격 |
+| `frontend/app/globals.css` | ① 맨 끝에 `/* CR-027 theme layer: copied from mockup/index.html, remove to revert */` 주석 + 목업의 `<style>` 두 블록(`concept 3` 23줄, `fixes` 4줄)을 **그대로** 붙임(스크립트로 목업 본문과 문자열 일치 확인). ② 앱 전용 클래스 옛 색 값 교체(§2) ③ `.brand em` 크기·간격 ④ **(§2-1 4번)** `.heading .brand-slogan` 규칙과 `@media (min-width: 1200px)` 규칙을 목업과 같은 값으로 추가(테마 층 **앞**에 두어 테마 층이 계속 맨 끝) |
 | `frontend/app/page.tsx` | 사이드바 문구 `LEARN AT YOUR PACE` → `내 페이스로, 끝까지` |
+| `frontend/components/Dashboard.tsx` | **(§2-1 4번)** `heading` 안, 인사말 `<div>` 와 `＋ 학습 경로 만들기` 버튼 사이에 `<p className="brand-slogan">배움의 시작부터 완주까지,<br />PaceMate가 함께합니다.</p>` 추가(이 화면에만) |
 | `frontend/app/layout.tsx` | `description` 을 지시서의 문장으로 교체(`title` "PaceMate" 그대로) |
-| `frontend/lib/cr027.test.ts` (신규) | 테스트 4건 |
+| `frontend/lib/cr027.test.ts` (신규) | 테스트 5건 |
 | `frontend/lib/levelSelection.test.ts` | 옛 색 `#d9dcec` 를 확인하던 한 줄을 새 값 `#cbd4e6` 로 수정(이 CR 의 색 변경에 따른 테스트 수정, 로직 변경 없음) |
 
 JSX 구조, 로직, 백엔드, 글꼴, 간격, 크기(§2-1 의 `.brand em` 제외)는 바꾸지 않았다. 기존 규칙은 지우지 않았다. 두 블록 안의 선택자·값·`!important` 는 손대지 않았다.
@@ -74,12 +75,13 @@ JSX 구조, 로직, 백엔드, 글꼴, 간격, 크기(§2-1 의 `.brand em` 제�
 
 ## 6. 테스트와 빌드
 - `npm run typecheck`: 통과.
-- `npm test`: **253건 통과, 실패 0**(기준 249 + 새 4건). 새 테스트: ① 마커 주석 순서(theme layer → concept 3 → fixes, 한 번만)와 핵심 값 ② 테마 층에 글자 크기·간격·폭 등 색 외 속성이 없음(CR-015 하한 유지) ③ 사이드바 문구와 메타 설명이 지시서 문자열과 일치, `.brand em` 11px/.3px ④ 오류=`--red`, 완료=`--green`. 옛 색을 확인하던 기존 테스트 1건(`levelSelection.test.ts`)은 새 값으로 고쳤다(처음엔 이 1건이 실패했다).
+- `npm test`: **254건 통과, 실패 0**(기준 249 + 새 5건). 새 테스트: ① 마커 주석 순서(theme layer → concept 3 → fixes, 한 번만)와 핵심 값 ② 테마 층에 글자 크기·간격·폭 등 색 외 속성이 없음(CR-015 하한 유지) ③ 사이드바 문구와 메타 설명이 지시서 문자열과 일치, `.brand em` 11px/.3px ④ 오류=`--red`, 완료=`--green` ⑤ 대시보드 슬로건: 위치(인사말과 버튼 사이)·문구·CSS 두 규칙이 지시서와 같고 다른 화면 9개에는 없음, 테마 층이 계속 맨 끝. 옛 색을 확인하던 기존 테스트 1건(`levelSelection.test.ts`)은 새 값으로 고쳤다(처음엔 이 1건이 실패했다).
 - `npm run build`: **종료 코드 0**.
 - `npm run dev`(포트 3018, 확인 후 종료): `GET /` 가 200, 응답 HTML 의 `<meta name="description">` 이 새 문장으로 나옴.
 
 ## 7. 미검증
 - **브라우저 눈 확인 전부 미검증**: 11개 화면의 실제 색과 대비, 모바일(720px 이하)의 어두운 하단 메뉴 막대, 사이드바에서 "내 페이스로, 끝까지"(11px)가 252px 폭에서 줄바꿈 없이 들어가는지(한 줄 짧은 문구라 들어갈 것으로 보이나 미확인).
+- **대시보드 슬로건(§2-1 4번):** 1200px 이상에서 보이고 미만에서는 숨는지, 보일 때 버튼과 겹치거나 인사말을 밀어내지 않는지: 코드(CSS)만 확인했고 눈으로는 미검증. 슬로건은 한 줄(`white-space: nowrap`, 가운데 정렬, `flex: 1 1 auto`)이라 1200px 근처 폭에서 인사말 블록과 경쟁할 수 있다.
 - 어두운 사이드바 위 `.nav-soon` 의 가독성(대비): 미확인. 대비 비율 계산은 하지 않았다(목업의 색 검토 문서가 근거).
 - 배포 환경: 미검증.
 

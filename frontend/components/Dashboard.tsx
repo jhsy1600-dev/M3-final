@@ -153,6 +153,11 @@ export function Dashboard({
         <h1>안녕하세요, 학습자님 👋</h1>
         <p>현재 수준에서 목표까지, 오늘의 한 걸음을 시작해보세요.</p>
       </div>
+      <p className="brand-slogan">
+        배움의 시작부터 완주까지,
+        <br />
+        PaceMate가 함께합니다.
+      </p>
       <button className="btn" onClick={onCreatePath}>
         ＋ 학습 경로 만들기
       </button>

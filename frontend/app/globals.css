@@ -396,6 +396,10 @@ td { color: #586277; }
 .resource-actions { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
 .resource-form { margin-top: 10px; }
 
+/* CR-027 (2-1 #4): dashboard header slogan, wide screens only (same two rules as the mockup) */
+.heading .brand-slogan { display: none; margin: 0; color: var(--muted); font-size: 14px; font-weight: 700; line-height: 1.5; text-align: center; align-self: center; flex: 1 1 auto; padding: 0 16px; white-space: nowrap; }
+@media (min-width: 1200px) { .heading .brand-slogan { display: block; } }
+
 /* CR-027 theme layer: copied from mockup/index.html, remove to revert */
     /* CR-027 concept 3: bolder color, colored frame and card surfaces. Colors only. */
     :root{--ink:#17243b;--muted:#53627a;--line:#cbd4e6;--bg:#e9edf8;--white:#faf8ff;--blue:#3155d9;--blue-dark:#203fb2;--lav:#e1e7ff;--purple:#743cc8;--green:#18794e;--orange:#b45309;--red:#b42335;--shadow:0 10px 30px rgba(28,38,78,.14)}
