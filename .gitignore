@@ -42,3 +42,18 @@ Thumbs.db
 
 # Local session notes; not a project deliverable
 /대화기록.md
+
+# Personal research material (summary lives in docs/research_indirect_prompting.md)
+/docs/프롬프트와 응답사례연구.md
+
+# Submission copies of the change log (same content is in docs/change_management.md)
+/변경관리내역서.hwp
+/변경관리내역서.pdf
+
+# Design-team image variants not used by README or 서비스기획서 (slide variants are in the presentation PDF)
+/images/slide_*
+/images/*_최종.*
+/images/*.svg
+
+# Tool-generated agent notes for the frontend
+/frontend/AGENTS.md
