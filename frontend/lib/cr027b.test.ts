@@ -37,7 +37,7 @@ test("the new values are the table's", () => {
   assert.match(rule(".mode-pill.edit-mode"), /background: #fff0dc; color: var\(--orange\)/);
   assert.match(rule(".timer-panel {"), /border: 1px solid var\(--line\)[^}]*background: var\(--white\)/);
   assert.match(rule(".record-delete"), /color: var\(--red\)/);
-  assert.match(rule(".mini-bars span {"), /background: var\(--blue\)/);
+  assert.match(rule(".mini-bars span {"), /background: #6f86ee/); // CR-027 finish: was var(--blue)
   assert.match(rule(".insight-copy > p"), /color: #35445e/);
   assert.match(rule("button:focus-visible"), /outline: 3px solid var\(--blue\)/);
 });

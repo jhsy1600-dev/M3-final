@@ -199,8 +199,8 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 .goal-switch strong { font-size: 12px; }
 .goal-switch small { color: var(--muted); font-size: 9px; }
 .mini-bars { display: flex; align-items: flex-end; gap: 6px; height: 70px; margin: 10px 0 4px; }
-.mini-bars span { flex: 1; background: var(--blue); border-radius: 4px 4px 0 0; position: relative; }
-.mini-bars span i { position: absolute; top: -14px; left: 0; right: 0; text-align: center; font-style: normal; font-size: 10px; color: #778198; }
+.mini-bars span { flex: 1; background: #6f86ee; border-radius: 4px 4px 0 0; position: relative; }
+.mini-bars span i { position: absolute; top: -14px; left: 0; right: 0; text-align: center; font-style: normal; font-size: 10px; color: var(--muted); }
 .mini-days { display: flex; gap: 6px; font-size: 10px; color: var(--muted); }
 .mini-days span { flex: 1; text-align: center; }
 .scope-note { font-size: 10px; color: var(--muted); margin: 6px 0; }
@@ -366,7 +366,7 @@ td { color: #586277; }
 /* AI learning insight card (Phase 6B) */
 .insight-part { margin: 0 0 8px; }
 .insight-label { display: inline-block; font-size: 10px; font-weight: 850; letter-spacing: .4px; color: #6356d9; background: #e7e8ff; border-radius: 20px; padding: 2px 8px; margin-bottom: 3px; }
-.insight-copy .insight-part p { margin: 2px 0 0; font-size: 12px; color: #555e73; line-height: 1.6; }
+.insight-copy .insight-part p { margin: 2px 0 0; font-size: 12px; color: #35445e; line-height: 1.6; }
 
 /* Phase 5F: whole-course plan preview grouped by week */
 .plan-week-group { margin-top: 14px; }
