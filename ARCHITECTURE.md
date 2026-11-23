@@ -101,6 +101,107 @@ flowchart TB
 
 ## 5. 데이터와 쓰기 규칙 (구조 요약)
 - 컬렉션: `users`, `consent_records`, `goals`, `tasks`, `study_logs`, `reflections`, `conversations`, `insights`, `credentials`, 관리자용 `feedback`·`resource_candidates` 등(전체와 필드: `docs/erd_current.md`).
+### 핵심 데이터 관계 (ERD 요약)
+아래는 `docs/erd_current.md` 의 ERD 에서 **관계와 핵심 필드만** 옮긴 요약이다. 전체 필드, 제약, 결정 이력은 원본이 기준이다. 모든 개인 데이터는 `user_id`(= Firebase UID, 토큰에서만 정함)를 갖고, 사용자별로만 조회된다.
+
+```mermaid
+erDiagram
+    users ||--o{ goals : "1:N"
+    goals ||--o{ tasks : "1:N"
+    tasks ||--o{ study_logs : "1:N"
+    study_logs ||--o| reflections : "1:0..1"
+    users ||--o{ consent_records : "1:N"
+    users ||--o{ conversations : "1:N"
+    goals ||--o| insights : "1:0..1"
+    users ||--o| credentials : "1:0..1 (암호 이어 쓰기)"
+
+    users {
+        string uid PK "Firebase UID"
+        string active_goal_id
+        string consent_version
+        bool password_enabled
+    }
+    consent_records {
+        string id PK
+        string user_id FK
+        string terms_version
+        bool privacy_agreed
+        bool ai_use_agreed
+    }
+    goals {
+        string id PK
+        string user_id FK
+        string field "분야"
+        string course "과정명"
+        string current_level_name
+        string target_level_name
+        int weekly_hours
+        string start_date
+        string target_date
+        string status "active|completed|archived"
+    }
+    tasks {
+        string id PK
+        string goal_id FK
+        string plan_week_start "월요일"
+        string title
+        int estimated_minutes
+        string suggested_weekday "추천 요일(마감일 아님)"
+        string status "pending|completed"
+    }
+    study_logs {
+        string id PK
+        string task_id FK
+        string study_date
+        int minutes
+        string activity
+    }
+    reflections {
+        string id PK
+        string study_log_id FK
+        string content
+        list tags
+    }
+    conversations {
+        string id PK
+        string user_id FK
+        string title
+        list messages "출처 포함"
+    }
+    insights {
+        string id PK "= goal_id"
+        string goal_id FK
+        string summary
+        string next_action
+    }
+    credentials {
+        string id PK "암호 해시 키(원문 없음)"
+        string uid FK
+    }
+    feedback {
+        string id PK "UID 없음"
+        int usability
+        int ai_usefulness
+        string status
+    }
+    resource_candidates {
+        string id PK "UID 없음"
+        string url
+        string collector_type
+        string status "pending|approved|rejected"
+    }
+    learning_documents {
+        string id PK "공용 읽기 전용, UID 없음"
+        string title
+        string source_name
+        list chunks
+    }
+```
+
+- `feedback`, `resource_candidates`, `learning_documents` 는 사용자(UID)와 연결되지 않는다. `learning_documents` 는 팀이 검토한 공용 읽기 전용 자료이고, `resource_candidates` 는 관리자가 검토해 승인한 것만 `learning_documents` 에 반영된다.
+- 진행률은 `tasks` 의 완료 수 ÷ 전체 수이고, 튜터의 Long-term Memory 는 `study_logs`·`reflections` 를 쓴다(4장).
+
+### 쓰기 규칙
 - 계획은 **확정할 때만 저장**한다(`POST /api/plan/confirm` 이 목표와 과제를 함께 저장). 초안 생성은 저장하지 않는다.
 - 쓰기 요청은 `client_request_id` 로 **멱등** 처리한다(응답을 못 받고 재시도해도 중복 저장 없음).
 - 날짜와 주간 경계(월~일)는 서비스 시간대 **Asia/Seoul** 이고, 백엔드는 `clock.py`, 프론트는 `lib/week.ts` 만 쓴다.
