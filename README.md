@@ -63,6 +63,7 @@ AI 를 개선해 온 과정(현상 → 원인 → 결정 → 효과)은 `docs/ai
 
 ## 6. 구조
 - 요청 흐름: 프론트 → (Firebase ID 토큰) → FastAPI → Firestore / OpenAI. 프론트는 DB 와 AI 를 직접 부르지 않습니다. 서버는 **토큰에서만 UID 를 정하고** 요청 본문의 사용자 정보를 믿지 않습니다.
+- 사용자 매뉴얼: [사용자매뉴얼.md](사용자매뉴얼.md)
 - 발표 슬라이드(PDF): [docs/PaceMate_최종발표.pdf](docs/PaceMate_최종발표.pdf)
 - 시스템 아키텍처(구성도, 인증·보안 경계, AI 호출 구조, 배포): `ARCHITECTURE.md`
 - 데이터 흐름도(DFD, 레벨 0~3): `docs/dfd_by_module.md`
@@ -134,6 +135,7 @@ npm run build
 | 먼저 볼 문서 | 내용 |
 |---|---|
 | `mission.md` | 과제 요구사항과 평가 기준 |
+| `사용자매뉴얼.md` | 화면별 사용 방법(실제 화면 캡처 포함) |
 | `서비스기획서.md`, `PRD.md` | 무엇을 왜 만드는가, 기능 요구사항과 수용 기준(FR-01~09) |
 | `docs/change_management.md` | MVP 이후 변경·개선 기록(CR 번호), 사용자 테스트 반영 |
 | `docs/ai_improvement_log.md` | AI 개선 이력 |
