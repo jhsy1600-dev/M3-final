@@ -57,3 +57,6 @@ Thumbs.db
 
 # Tool-generated agent notes for the frontend
 /frontend/AGENTS.md
+
+# Manual captures that show user activity (kept locally, not published)
+/images/manual/_비공개_*
