@@ -105,11 +105,11 @@ npm run dev
 ```powershell
 cd backend
 python -m pip install -r requirements-dev.txt
-python -m pytest            # 2026-11-03 기준 1,346건 통과
+python -m pytest            # 2026-11-23 기준 1,393건 통과
 
 cd ../frontend
 npm run typecheck
-npm test                    # 2026-11-03 기준 205건 통과
+npm test                    # 2026-11-23 기준 262건 통과
 npm run build
 ```
 
@@ -122,7 +122,7 @@ npm run build
 ## 9. 결과
 - **배포:** 프론트(Vercel)와 백엔드(Render)에 배포했고, Firebase 실연동(익명 인증, Firestore 저장, UID 격리)을 확인했습니다.
 - **검증:** 개발 보고를 그대로 믿지 않고 검증(PM) 세션이 코드·테스트·실제 호출로 확인했습니다. Phase 별 검증 기록은 `docs/*_verification*.md`, MVP 이후 변경 기록은 `docs/change_management.md`.
-- **사용자 테스트:** 2026.11.01~11.20 진행 중(테스터 5명 이상, 안내문 `docs/tester_guide.md`, 익명 설문 `docs/user_test_survey.md`). 결과, 설문 요약, 피드백 반영 내역은 테스트 후 이 절에 추가합니다. 지금까지의 사용자 의견과 개선 대응은 `docs/feedback_to_improvement_map.md`.
+- **사용자 테스트:** 2026.11.01~11.20 진행, 피드백 제공자 9명(팀이 파악한 인원). 구두·카카오톡·앱 안 피드백으로 받은 의견을 의견 단위로 정리해 **36건**(앱 안 5건, 그 외 31건, 같은 의견은 1건으로 합침)이고, 이 중 화면에서 눈에 보이는 가벼운 변경 **16건을 적용**했으며 내부 구조를 바꾼 6건은 팀 통합 테스트로 관리하고 9건은 향후·보류로 남겼습니다. 기록: `docs/feedback_ledger.md`(건수 기준과 목록), `docs/integration_test_and_user_feedback.md`(보고 기준), `docs/feedback_to_improvement_map.md`(의견→개선 대응). 안내문은 `docs/tester_guide.md`. 설문은 실시하지 않았습니다.
 - **한계와 이후 계획:** MVP 에서 제외한 Function Calling 튜터 Agent, 리마인더 자동화, 멀티모달 등은 서비스기획서 10장과 `docs/post_mvp_backlog.md` 에 있습니다.
 
 ## 10. 문서 안내
