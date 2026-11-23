@@ -8,6 +8,7 @@ import { NO_WEEK_TASKS, goalStat, taskDescription, visibleTasks, weeklyTargetMin
 import { InsightCard } from "@/components/InsightCard";
 import { ApiError, apiRequest, apiRequestWithHeaders } from "@/lib/api";
 import { taskToSelectForTimer, timerLocation } from "@/lib/timerSelection";
+import { changeTaskCompletion, doneButtonLabel } from "@/lib/taskCompletion";
 import { todayKSTDateString } from "@/lib/week";
 
 type Weekday = "none" | "mon" | "tue" | "wed" | "thu" | "fri" | "sat" | "sun";
@@ -83,6 +84,7 @@ export function ExecutionScreen() {
   const [activeGoalId, setActiveGoalId] = useState<string | null>(null);
   const [switching, setSwitching] = useState(false);
   const [switchError, setSwitchError] = useState<string | null>(null);
+  const [completingId, setCompletingId] = useState<string | null>(null);
 
   async function load() {
     if (!session) return;
@@ -208,6 +210,30 @@ export function ExecutionScreen() {
       setSaveError(error instanceof ApiError ? error.message : "저장하지 못했습니다.");
     } finally {
       setSaving(false);
+    }
+  }
+
+  // MNT-002: complete / un-complete a task from this screen (same PATCH as the dashboard checkbox)
+  async function toggleDone(task: TaskItem) {
+    if (!session || completingId) return;
+    setCompletingId(task.id);
+    setSaveError(null);
+    try {
+      const token = await session.getToken();
+      const result = await changeTaskCompletion(
+        {
+          patch: (path, body) => apiRequest(path, { method: "PATCH", token, body }),
+          reload: load,
+          errorText: (error) => (error instanceof ApiError ? error.message : "완료 상태를 바꾸지 못했습니다."),
+        },
+        task.id,
+        task.status,
+      );
+      if (!result.ok) setSaveError(result.message);
+    } catch (error) {
+      setSaveError(error instanceof ApiError ? error.message : "완료 상태를 바꾸지 못했습니다.");
+    } finally {
+      setCompletingId(null);
     }
   }
 
@@ -542,6 +568,11 @@ export function ExecutionScreen() {
                 </div>
               ))}
               {(logsByTask[task.id] ?? []).length === 0 && <p className="small muted">아직 기록이 없습니다.</p>}
+              </div>
+              <div className="task-record-controls" style={{ marginTop: 8 }}>
+                <button type="button" className="link-btn task-done" onClick={() => toggleDone(task)} disabled={completingId === task.id}>
+                  {doneButtonLabel(task.status)}
+                </button>
               </div>
             </article>
           ))}
