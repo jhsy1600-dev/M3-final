@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import { useAuth } from "@/components/AuthProvider";
 import { GoalSwitch } from "@/components/GoalSwitch";
+import { LeaveConfirmDialog } from "@/components/LeaveConfirmDialog";
 import { LevelCombo } from "@/components/LevelCombo";
 import { useGoalSwitch } from "@/components/useGoalSwitch";
 import { ApiError, apiRequest } from "@/lib/api";
@@ -43,6 +44,7 @@ import {
   targetOptions,
   type LevelSelection,
 } from "@/lib/levelSelection";
+import { resolveLeave, shouldMoveWithoutDialog, type LeaveChoice } from "@/lib/leaveGuard";
 import { clearWizardDraft, loadWizardDraft, saveWizardDraft } from "@/lib/wizardStorage";
 import { mondayOfDateString, todayKSTDateString } from "@/lib/week";
 import { startDateError } from "@/lib/wizardDates";
@@ -125,7 +127,7 @@ export function LearningPathWizard({
 }: {
   onClose: () => void;
   /** The app shell asks this guard before leaving the screen (sidebar clicks etc.). */
-  registerLeaveGuard: (guard: (() => boolean) | null) => void;
+  registerLeaveGuard: (guard: ((proceed: () => void) => boolean) | null) => void;
 }) {
   const { session } = useAuth();
   const goalSwitch = useGoalSwitch();
@@ -466,9 +468,15 @@ export function LearningPathWizard({
     }
   }
 
+  const discardedRef = useRef(false);
+  // CR-029: the move that is waiting for the user's choice in the leave dialog (null = closed).
+  const [pendingLeave, setPendingLeave] = useState<(() => void) | null>(null);
+
   // Persist the in-progress wizard (P4-7): survives refresh/navigation until confirmed or cleared.
   useEffect(() => {
     if (confirmStatus === "done") return;
+    // CR-029: after "계획 제거" the draft must stay deleted, so this effect must not write again.
+    if (discardedRef.current) return;
     const snapshot: WizardSnapshot = {
       field,
       goal,
@@ -533,14 +541,26 @@ export function LearningPathWizard({
   // with unsaved work still asks first (same confirmation as before).
   const hasProgress = recommendation != null || draft != null;
   useEffect(() => {
-    registerLeaveGuard(() => {
-      if (hasProgress && confirmStatus !== "done") {
-        return window.confirm("작성 중인 학습 경로·계획이 있습니다. 저장하지 않고 다른 화면으로 이동할까요?");
-      }
-      return true;
+    registerLeaveGuard((proceed) => {
+      if (shouldMoveWithoutDialog({ hasProgress, confirmStatus })) return true;
+      // Asynchronous: open the dialog and keep the move until the user chooses.
+      setPendingLeave(() => proceed);
+      return false;
     });
     return () => registerLeaveGuard(null);
   }, [hasProgress, confirmStatus, registerLeaveGuard]);
+
+  function chooseLeave(choice: LeaveChoice) {
+    const proceed = pendingLeave;
+    if (!proceed) return;
+    resolveLeave(choice, proceed, {
+      clearDraft: clearWizardDraft,
+      markDiscarded: () => {
+        discardedRef.current = true;
+      },
+      close: () => setPendingLeave(null),
+    });
+  }
 
   if (confirmStatus === "done") {
     return (
@@ -569,6 +589,7 @@ export function LearningPathWizard({
 
   return (
     <>
+      {pendingLeave && <LeaveConfirmDialog onChoose={chooseLeave} />}
       <GoalSwitch
         goals={goalSwitch.goals}
         activeGoalId={goalSwitch.activeGoalId}

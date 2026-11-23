@@ -84,7 +84,9 @@ export default function Home() {
   const [today, setToday] = useState("");
   const [query, setQuery] = useState("");
   // The wizard registers a function that asks the user before leaving unsaved work.
-  const leaveGuard = useRef<(() => boolean) | null>(null);
+  // It returns true to move at once, or false after opening its own dialog (CR-029); then it
+  // calls `proceed` itself if the user chooses to leave.
+  const leaveGuard = useRef<((proceed: () => void) => boolean) | null>(null);
 
   useEffect(() => {
     setView(parseHash(window.location.hash).view ?? "dashboard");
@@ -120,14 +122,17 @@ export default function Home() {
   const go = useCallback(
     (next: View) => {
       if (next === view) return;
-      if (leaveGuard.current && !leaveGuard.current()) return;
-      setView(next);
-      window.history.replaceState(null, "", buildHash(next));
+      const proceed = () => {
+        setView(next);
+        window.history.replaceState(null, "", buildHash(next));
+      };
+      if (leaveGuard.current && !leaveGuard.current(proceed)) return;
+      proceed();
     },
     [view],
   );
 
-  const registerLeaveGuard = useCallback((guard: (() => boolean) | null) => {
+  const registerLeaveGuard = useCallback((guard: ((proceed: () => void) => boolean) | null) => {
     leaveGuard.current = guard;
   }, []);
 
