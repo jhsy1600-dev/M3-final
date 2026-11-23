@@ -63,10 +63,13 @@ AI 를 개선해 온 과정(현상 → 원인 → 결정 → 효과)은 `docs/ai
 
 ## 6. 구조
 - 요청 흐름: 프론트 → (Firebase ID 토큰) → FastAPI → Firestore / OpenAI. 프론트는 DB 와 AI 를 직접 부르지 않습니다. 서버는 **토큰에서만 UID 를 정하고** 요청 본문의 사용자 정보를 믿지 않습니다.
+- 발표 슬라이드(PDF): [docs/PaceMate_최종발표.pdf](docs/PaceMate_최종발표.pdf)
 - 시스템 아키텍처(구성도, 인증·보안 경계, AI 호출 구조, 배포): `ARCHITECTURE.md`
 - 데이터 흐름도(DFD, 레벨 0~3): `docs/dfd_by_module.md`
 - 데이터 구조(ERD): `docs/erd_current.md`
 - API 명세: `docs/phase1_design.md`, 실행 중인 서버의 `/docs`
+
+![PaceMate 서비스 구조 (구현 완료판)](images/PaceMate_서비스구조_설명_개선안.png)
 
 ```
 frontend/   Next.js 앱 (components/: 화면, lib/: API·날짜·상태 도우미)
